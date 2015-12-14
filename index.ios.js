@@ -1,119 +1,100 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- */
 'use strict';
 
-var MOCKED_MOVIES_DATA = [
-  {title: 'Title', year: '2015', posters: {thumbnail: 'http://i.imgur.com/UePbdph.jpg'}},
-];
-
 var React = require('react-native');
+var UIExplorerButton = require('./UIExplorerButton');
+var OneClock = require('./oneClock');
+var ColorPicker = require('./colorPicker')
+var PickerExample = require('./')
+
 var {
   AppRegistry,
   StyleSheet,
+  TouchableHighlight,
   Image,
   ListView,
   Text,
   View,
 } = React;
 
-var REQUEST_URL = 'https://raw.githubusercontent.com/facebook/react-native/master/docs/MoviesExample.json';
-
-var AwesomeProject = React.createClass({
+var boxcloxIOS = React.createClass({
     
-    getInitialState: function() {
+  propTypes: {
+    pause: React.PropTypes.bool,
+    onPress: React.PropTypes.func,
+  },
+
+  getInitialState: function() {
     return {
-      dataSource: new ListView.DataSource({
-        rowHasChanged: (row1, row2) => row1 !== row2,
-      }),
-      loaded: false,
-      };
-    },
-
-    fetchData: function() {
-    fetch(REQUEST_URL)
-      .then((response) => response.json())
-      .then((responseData) => {
-        this.setState({
-          dataSource: this.state.dataSource.cloneWithRows(responseData.movies),
-          loaded: true,
-        });
-      })
-      .done();
-    },
-
-    componentDidMount: function() {
-    this.fetchData();
-    },
-
-    render: function() {
-    if (!this.state.loaded) {
-      return this.renderLoadingView();
+      pause: true,
+      color: '#FF0000',
+      color2: '#00FF00',
+    };
+  },
+  handlePauseAll: function() {
+    this.setState({pause: !this.state.pause});
+  },
+  getPauseInfo: function() {
+    if (this.state.pause) {
+      return 'JAM STOP' ;
+    } else {
+      return 'JAM START';
     }
-
+  },
+  changeColor: function(color) {
+    this.setState({color: color});
+  },
+  changeColorText: function(evt) {
+    this.changeColor(evt.target.value);
+  },
+  changeColor2: function(color2) {
+    this.setState({color2: color2});
+  },
+  changeColorText2: function(evt) {
+    this.changeColor2(evt.target.value);
+  },
+  render: function() {
+    var pause = this.state.pause;
     return (
-      <ListView
-        dataSource={this.state.dataSource}
-        renderRow={this.renderMovie}
-        style={styles.listView}
-      />
-      );
-    },
-
-    renderLoadingView: function() {
-    return (
+      <View>
       <View style={styles.container}>
-        <Text>
-          Loading movies...
-        </Text>
+      <OneClock pause={pause} style={{backgroundColor: this.state.color}}/>
+      <OneClock pause={pause} style={{backgroundColor: this.state.color}}/>
+      <OneClock pause={pause} style={{backgroundColor: this.state.color}}/>
+      <OneClock pause={pause} style={{backgroundColor: this.state.color2}}/>
+      <OneClock pause={pause} style={{backgroundColor: this.state.color2}}/>
+      <OneClock pause={pause} style={{backgroundColor: this.state.color2}}/>
+      </View>
+      <UIExplorerButton onPress={this.handlePauseAll}> {this.getPauseInfo()} </UIExplorerButton>
       </View>
       );
     },
 
-    renderMovie: function(movie) {
-    return (
-      <View style={styles.container}>
-        <Image
-          source={{uri: movie.posters.thumbnail}}
-          style={styles.thumbnail}
-        />
-        <View style={styles.rightContainer}>
-          <Text style={styles.title}>{movie.title}</Text>
-          <Text style={styles.year}>{movie.year}</Text>
-        </View>
-      </View>
-          );
-        },
-      });
+  });
 
 var styles = StyleSheet.create({
-      container: {
-      flex: 1,
-      flexDirection: 'row',
-      justifyContent: 'center',
-      alignItems: 'center',
-      backgroundColor: '#F5FCFF',
+  container: {
+    flex: 1,
+    flexDirection: 'column',
+    flexWrap: 'wrap',
+    height: 350,
+    width: 200,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 40,
+    backgroundColor: '#FFF'
   },
-    thumbnail: {
-      width: 53,
-      height: 81,
+  button: {
+    borderColor: '#696969',
+    borderRadius: 8,
+    borderWidth: 1,
+    minWidth:175,
+    padding: 10,
+    margin: 5,
+    alignItems: 'center',
+    justifyContent: 'center',
+    // backgroundColor: this.props.color,
   },
-    rightContainer: {
-      flex: 1,
-  },
-    title:{
-      fontSize: 20,
-      marginBottom: 8,
-      textAlign: 'center',
-  },
-    year: {
-      textAlign: 'center',
-  },
-  listView: {
-    paddingTop: 20,
-    backgroundColor: '#F5FCFF',
-  },
+
 });
 
-AppRegistry.registerComponent('AwesomeProject', () => AwesomeProject);
+AppRegistry.registerComponent('boxcloxIOS', () => boxcloxIOS);
